@@ -9,6 +9,14 @@ jobs:
         with:
           persist-credentials: false
 
+      - name: install node v12
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+          
+      - name: yarn install
+        run: yarn install
+      
       - name: Transpile Typescript
         uses: icrawl/action-tsc@v1
 
