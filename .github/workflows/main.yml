@@ -16,13 +16,10 @@ jobs:
           
       - name: Install and Build
         run: |
-          npm install          
+          npm install
           
-      - name: yarn install
-        run: yarn install
-      
       - name: tsc compile
-        uses: iCrawl/action-tsc@v1
+        run: node_modules/typescript/bin/tsc
 
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@releases/v3
