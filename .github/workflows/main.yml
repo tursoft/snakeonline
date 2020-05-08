@@ -10,7 +10,7 @@ jobs:
           persist-credentials: false
 
       - name: Transpile Typescript
-        uses: stepek/tsc-action@master
+        uses: icrawl/action-tsc@v1
 
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@releases/v3
