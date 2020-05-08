@@ -22,7 +22,7 @@ jobs:
           
       - name: Install and Build
         run: |
-          npm install && ls -la
+          npm install && ls -la ./src
           
       - name: tsc compile
         run: node_modules/typescript/bin/tsc
