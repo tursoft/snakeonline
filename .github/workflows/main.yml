@@ -22,7 +22,7 @@ jobs:
         run: yarn install
       
       - name: Transpile Typescript
-        uses: icrawl/action-tsc@v1
+        uses: stepek/tsc-action@master
 
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@releases/v3
