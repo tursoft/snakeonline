@@ -1,7 +1,7 @@
 {
   "name": "snake-online",
   "version": "1.0.0",
-  "description": "Simple snake game using Html Canvas",
+  "description": "Simple snake game using html Canvas",
   "main": "game.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
