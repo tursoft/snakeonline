@@ -8,6 +8,8 @@ Simple version of classical snake game that was popular in nokia phones in 2000s
 # Technologies
 * typescript, js
 * html, css
+* https://github.com/abhin4v/hastatic
+* docker
 
 # Development Tools
 * node.js  (10+)
@@ -41,6 +43,8 @@ sudo docker run --name snakeonline -d -p 8080:3000 tursoft/snakeonline
 # push image
 sudo docker push tursoft/snakeonline
 `
+# docker image
+* https://hub.docker.com/repository/docker/tursoft/snakeonline
 
 # Screenshoot
 ![Screenshoot][screenshoot1]
