@@ -56,7 +56,7 @@ sudo docker push tursoft/snakeonline
 # Screenshoot
 ![Screenshoot][screenshoot1]
 
-[screenshoot1]: src/snake.gif "Screenshoot"
+[screenshoot1]: https://github.com/tursoft/snakeonline/blob/master/snake.gif?raw=true "Screenshoot"
 
 
 # Roadmap
