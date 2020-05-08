@@ -1,0 +1,15 @@
+{
+  "name": "Snake Online",
+  "version": "1.0.0",
+  "description": "Simple snake game using Html Canvas",
+  "main": "game.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Muhammet TURŞAK <tursoft@gmail.com>",
+  "license": "Apache-2.0",
+
+  "devDependencies": {
+    "typescript": "~3.4.5"
+  }
+}
