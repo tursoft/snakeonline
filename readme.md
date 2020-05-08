@@ -33,6 +33,15 @@ Simple version of classical snake game that was popular in nokia phones in 2000s
 * Make your change and tsc will re-generate js files automatically
 * Refresh browser to check changes
 
+# Docker Commands
+`
+sudo docker build -t tursoft/snakeonline .
+# run with default configs
+sudo docker run --name snakeonline -d -p 8080:3000 tursoft/snakeonline
+# push image
+sudo docker push tursoft/snakeonline
+`
+
 # Screenshoot
 ![Screenshoot][screenshoot1]
 
