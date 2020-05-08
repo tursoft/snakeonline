@@ -27,7 +27,7 @@ Simple version of classical snake game that was popular in nokia phones in 2000s
 # Build
 * Execute `npm i`
 * Execute `tsc`
-* Open browser
+* Open browser and visit file `./index.html`
 
 # Run
 * Start on VSCode (F5)
