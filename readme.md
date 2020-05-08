@@ -42,16 +42,21 @@ Simple version of classical snake game that was popular in nokia phones in 2000s
 * Refresh browser to check changes
 
 # Docker Build Commands
-`
-sudo docker build -t tursoft/snakeonline .
-# run with default configs
-sudo docker run --name snakeonline -d -p 8080:3000 tursoft/snakeonline
-# push image
-sudo docker push tursoft/snakeonline
-`
+
+build the image
+`sudo docker build -t tursoft/snakeonline`
+
+run a container
+`sudo docker run --name snakeonline -d -p 8080:3000 tursoft/snakeonline`
+
+push the image to registry
+`sudo docker push tursoft/snakeonline`
+
 # Docker Image & Container Deployment
-* [dockerhub](https://hub.docker.com/repository/docker/tursoft/snakeonline)
-* `docker run --name snakeonline -d tursoft/snakeonline`
+* https://hub.docker.com/repository/docker/tursoft/snakeonline
+
+pull image and run a container
+* `sudo docker run --name snakeonline -d tursoft/snakeonline`
 
 # Screenshoot
 ![Screenshoot][screenshoot1]
