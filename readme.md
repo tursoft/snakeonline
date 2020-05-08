@@ -5,10 +5,16 @@ Simple version of classical snake game that was popular in nokia phones in 2000s
 * Muhammet Turşak - Senior Software Architect (tursoft@gmail.com)
 * http://tursoft.net
 
+# Status
+![Build and Deploy](https://github.com/tursoft/snakeonline/workflows/Build%20and%20Deploy/badge.svg?branch=master)
+
+# Demo Deployment
+* https://tursoft.github.io/snakeonline/
+
 # Technologies
-* typescript, js
+* Typescript, Javascript
 * html, css
-* https://github.com/abhin4v/hastatic
+* [hastatic](https://github.com/abhin4v/hastatic)
 * docker
 
 # Development Tools
@@ -35,7 +41,7 @@ Simple version of classical snake game that was popular in nokia phones in 2000s
 * Make your change and tsc will re-generate js files automatically
 * Refresh browser to check changes
 
-# Docker Commands
+# Docker Build Commands
 `
 sudo docker build -t tursoft/snakeonline .
 # run with default configs
@@ -43,8 +49,9 @@ sudo docker run --name snakeonline -d -p 8080:3000 tursoft/snakeonline
 # push image
 sudo docker push tursoft/snakeonline
 `
-# docker image
-* https://hub.docker.com/repository/docker/tursoft/snakeonline
+# Docker Image & Container Deployment
+* [dockerhub](https://hub.docker.com/repository/docker/tursoft/snakeonline)
+* `docker run --name snakeonline -d tursoft/snakeonline`
 
 # Screenshoot
 ![Screenshoot][screenshoot1]
