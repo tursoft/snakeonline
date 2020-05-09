@@ -2,10 +2,10 @@
   "name": "snake-online",
   "version": "1.0.0",
   "description": "Simple snake game using html Canvas",
-  "repository": "https://github.com/tursoft/snakeonline",
+  "repository": "github:tursoft/snakeonline",
   "main": "game.js",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc --build tsconfig.json"
   },
   "author": "Muhammet TURŞAK <tursoft@gmail.com>",
   "license": "Apache-2.0",
