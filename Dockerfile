@@ -1,5 +1,11 @@
-FROM abhin4v/hastatic:latest
+FROM node:10.15.2-alpine AS build
+WORKDIR /usr/app
+COPY package.json ./
+RUN npm install
+COPY ./src ./src
+RUN npm run build
 
-COPY src /opt/website
+FROM abhin4v/hastatic:latest
+COPY --from=build /usr/app/src /opt/website
 WORKDIR /opt/website
 CMD ["/usr/bin/hastatic"]

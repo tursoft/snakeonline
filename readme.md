@@ -26,7 +26,7 @@ Simple version of classical snake game that was popular in nokia phones in 2000s
 
 # Build
 * Execute `npm i`
-* Execute `tsc`
+* Execute `npm run build`
 * Open browser and visit file `./index.html`
 
 # Run
@@ -44,7 +44,7 @@ Simple version of classical snake game that was popular in nokia phones in 2000s
 # Docker Build Commands
 
 build the image
-`sudo docker build -t tursoft/snakeonline`
+`sudo docker build . -t tursoft/snakeonline`
 
 run a container
 `sudo docker run --name snakeonline -d -p 8080:3000 tursoft/snakeonline`
@@ -56,7 +56,7 @@ push the image to registry
 * https://hub.docker.com/repository/docker/tursoft/snakeonline
 
 pull image and run a container
-* `sudo docker run --name snakeonline -d tursoft/snakeonline`
+* `sudo docker run --name snakeonline -d -p 8080:3000 tursoft/snakeonline`
 
 # Screenshoot
 ![Screenshoot][screenshoot1]
