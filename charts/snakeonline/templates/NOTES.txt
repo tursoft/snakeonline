@@ -14,7 +14,7 @@
   echo http://$SERVICE_IP:{{ .Values.service.port }}
 {{- else if contains "ClusterIP" .Values.service.type }}
   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "snakeonline.name" . }},release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
-  export CLUSTER_IP=$(kubectl get svc snakeonline -ojsonpath='{.spec.clusterIP}')
-  echo "Visit http://$CLUSTER_IP:{{ .Values.service.port }} to use your application"
+  export APP_IP=127.0.0.1
+  echo "Visit http://$APP_IP:{{ .Values.service.port }} to use your application"
   kubectl port-forward $POD_NAME {{ .Values.service.port }}:{{ .Values.service.containerPort }}
 {{- end }}
