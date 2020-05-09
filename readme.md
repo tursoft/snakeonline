@@ -67,8 +67,16 @@ pull image and run a container
 * `sudo docker run --name snakeonline -d -p 8080:3000 tursoft/snakeonline`
 
 # Helm Build & Deploy
+Creating Helm Chart
 * `npm run helm`
+
+Installing Helm Chart (local)
 * `npm run helm-install`
+
+Installing Helm Chart (remote)
+* `helm repo add snakeonline https://tursoft.github.io/snakeonline/charts`
+* `helm install snakeonline`
+* https://tursoft.github.io/snakeonline/charts
 
 # Screenshoot
 ![Screenshoot][screenshoot1]
