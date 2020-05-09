@@ -40,8 +40,8 @@ jobs:
       #   uses: flydiverny/helm-package-action@master
       #   args: ./charts
 
-      - name: List folder content
-        run: ls -la
+      - name: Debug - List folder content
+        run: ls -la ./src && ls -la ./src/charts
 
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@releases/v3
