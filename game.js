@@ -15,13 +15,14 @@ var Game = /** @class */ (function () {
         this.gametitle = 'Snake Online';
         this.lives = 3;
         this.score = 0;
+        this.state = "paused"; // running, paused, gameover
+        this.width = 0;
+        this.height = 0;
         this.top = 90;
         this.left = 20;
         this.right = 20;
         this.bottom = 40;
-        this.state = "paused"; // running, paused, gameover
-        this.width = 0;
-        this.height = 0;
+        this.autorSectionHeight = 80;
         this.gameSpeed = 4;
         this.gridSize = 20;
         this.boxColor = 'yellow';
@@ -37,23 +38,40 @@ var Game = /** @class */ (function () {
         this.targetBox = { x: 0, y: 0, fillColor: 'green' };
         this.timer = 0;
         this.debugBoxes = [];
+        this.canvasSize = { width: 0, height: 0 };
         this.canvas = document.getElementById("game");
         this.context = this.canvas.getContext('2d');
-        document.onkeydown = this.onKeyDown.bind(this);
         this.canvas.onclick = this.onCanvasClick.bind(this);
+        // this.canvas = <HTMLCanvasElement>document.getElementById("game");
+        // this.context = <CanvasRenderingContext2D>this.canvas.getContext('2d');
+        window.onresize = this.onResize.bind(this);
+        document.onkeydown = this.onKeyDown.bind(this);
         this.lives = 3;
         this.score = 0;
+        this.onResize();
+        // game.init();
     }
+    Game.prototype.onResize = function () {
+        this.canvas.width = document.body.clientWidth; //document.width is obsolete
+        this.canvas.height = document.body.clientHeight - this.autorSectionHeight; //document.height is obsolete
+        this.context = this.canvas.getContext('2d');
+        if (this.canvasSize.width != this.canvas.width ||
+            this.canvasSize.height != this.canvas.height) {
+            this.canvasSize.width = this.canvas.width;
+            this.canvasSize.height = this.canvas.height;
+            this.width = this.canvasSize.width - (this.left + this.right);
+            this.height = this.canvasSize.height - (this.top + this.bottom);
+            this.maxX = Math.ceil(this.width / this.gridSize);
+            this.maxY = Math.ceil(this.height / this.gridSize);
+            this.init();
+        }
+    };
     Game.prototype.init = function () {
         this.state = 'running';
-        this.width = this.canvas.width - (this.left + this.right);
-        this.height = this.canvas.height - (this.top + this.bottom);
         this.head = { x: 10, y: 10 };
         this.size = 5;
         this.speedX = 1;
         this.speedY = 0;
-        this.maxX = Math.ceil(this.width / this.gridSize);
-        this.maxY = Math.ceil(this.height / this.gridSize);
         this.boxes = [];
         this.targetBox = { x: 5, y: 5, fillColor: this.targetBoxColor };
         this.setNewTarget();
@@ -415,6 +433,5 @@ var Game = /** @class */ (function () {
 }());
 document.addEventListener("DOMContentLoaded", function (event) {
     var game = new Game();
-    game.init();
 });
 //# sourceMappingURL=game.js.map
