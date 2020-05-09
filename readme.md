@@ -76,7 +76,7 @@ Installing Helm Chart (local)
 Installing Helm Chart (remote)
 * `helm repo add snakeonline https://tursoft.github.io/snakeonline/charts`
 * `helm install snakeonline snakeonline/snakeonline`
-* `helm install snakeonline --set service.port=8081 snakeonline/snakeonline`
+* `helm install snakeonline --set service.port=33000 snakeonline/snakeonline`
 * https://tursoft.github.io/snakeonline/charts
 
 # Screenshoot
