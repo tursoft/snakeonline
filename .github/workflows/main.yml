@@ -27,12 +27,12 @@ jobs:
       - name: Typescript Compile
         run: node_modules/typescript/bin/tsc
 
-      - name: Package Helm Charts
-        uses: dave-mcconnell/helm-gh-pages-microservices@master
-        with:
-          access-token: ${{ secrets.GITHUB_TOKEN }}
-          source-charts-folder: 'charts'
-          destination-repo: tursoft/snake-online
+      # - name: Package Helm Charts
+      #   uses: dave-mcconnell/helm-gh-pages-microservices@master
+      #   with:
+      #     access-token: ${{ secrets.GITHUB_TOKEN }}
+      #     source-charts-folder: 'charts'
+      #     destination-repo: tursoft/snake-online
 
       # - name: Package Helm Charts
       #   uses: flydiverny/helm-package-action@master
