@@ -1,4 +1,5 @@
 ## SNAKE ONLINE
+Enjoy like in your childhood!
 Simple version of classical snake game that was popular in nokia phones in 2000s.
 
 # Author
