@@ -1,4 +1,13 @@
 "use strict";
+var CommandEnum;
+(function (CommandEnum) {
+    CommandEnum[CommandEnum["UP"] = 0] = "UP";
+    CommandEnum[CommandEnum["DOWN"] = 1] = "DOWN";
+    CommandEnum[CommandEnum["LEFT"] = 2] = "LEFT";
+    CommandEnum[CommandEnum["RIGHT"] = 3] = "RIGHT";
+    CommandEnum[CommandEnum["PAUSE"] = 4] = "PAUSE";
+    CommandEnum[CommandEnum["RUN"] = 5] = "RUN";
+})(CommandEnum || (CommandEnum = {}));
 var Game = /** @class */ (function () {
     function Game() {
         this.version = 'v1.0.0';
@@ -25,11 +34,13 @@ var Game = /** @class */ (function () {
         this.maxX = 10;
         this.maxY = 10;
         this.boxes = [];
-        this.targetBox = { x: 0, y: 0 };
+        this.targetBox = { x: 0, y: 0, fillColor: 'green' };
         this.timer = 0;
+        this.debugBoxes = [];
         this.canvas = document.getElementById("game");
         this.context = this.canvas.getContext('2d');
         document.onkeydown = this.onKeyDown.bind(this);
+        this.canvas.onclick = this.onCanvasClick.bind(this);
         this.lives = 3;
         this.score = 0;
     }
@@ -44,7 +55,7 @@ var Game = /** @class */ (function () {
         this.maxX = Math.ceil(this.width / this.gridSize);
         this.maxY = Math.ceil(this.height / this.gridSize);
         this.boxes = [];
-        this.targetBox = { x: 5, y: 5 };
+        this.targetBox = { x: 5, y: 5, fillColor: this.targetBoxColor };
         this.setNewTarget();
         this.setGameSpeed(this.gameSpeed);
     };
@@ -73,7 +84,7 @@ var Game = /** @class */ (function () {
                 newY = 0;
             }
             this.head = { x: newX, y: newY };
-            var nexBox = { x: this.head.x, y: this.head.y, speedX: this.speedX, speedY: this.speedY };
+            var nexBox = { x: this.head.x, y: this.head.y, fillColor: this.boxColor, speedX: this.speedX, speedY: this.speedY };
             this.boxes.push(nexBox);
             if (this.boxes.length > this.size) {
                 this.boxes.splice(0, 1);
@@ -94,40 +105,113 @@ var Game = /** @class */ (function () {
             }
         }
     };
+    Game.prototype.getBoxCenter = function (box) {
+        var centerX = ((box.x - 1) * this.gridSize) + (this.gridSize / 2); // this.width / 2;
+        var centerY = ((box.y - 1) * this.gridSize) + (this.gridSize / 2); // this.height / 2;
+        return { x: centerX, y: centerY };
+    };
+    Game.prototype.getOffsetPosition = function (evt, parent) {
+        var position = {
+            x: (evt.targetTouches) ? evt.targetTouches[0].pageX : evt.clientX,
+            y: (evt.targetTouches) ? evt.targetTouches[0].pageY : evt.clientY
+        };
+        while (parent.offsetParent) {
+            position.x -= parent.offsetLeft - parent.scrollLeft;
+            position.y -= parent.offsetTop - parent.scrollTop;
+            parent = parent.offsetParent;
+        }
+        return position;
+    };
+    Game.prototype.onCanvasTouched = function (e) {
+        e.preventDefault();
+        var clickPoint = this.getOffsetPosition(e, e.target);
+        this.handleClick(clickPoint);
+    };
+    Game.prototype.onCanvasClick = function (e) {
+        e.preventDefault();
+        var clickPoint = { x: e.offsetX - this.left, y: e.offsetY - this.top };
+        this.handleClick(clickPoint);
+    };
+    Game.prototype.handleClick = function (clickPoint) {
+        var headBox = this.getHeadBox();
+        var center = this.getBoxCenter(headBox);
+        var diffX = clickPoint.x - center.x;
+        var diffY = clickPoint.y - center.y;
+        var cmd = null;
+        if (this.speedX == 0) {
+            cmd = (diffX > 0 ? CommandEnum.RIGHT : CommandEnum.LEFT);
+        }
+        else if (this.speedY == 0) {
+            cmd = (diffY > 0 ? CommandEnum.DOWN : CommandEnum.UP);
+        }
+        if (cmd != null) {
+            // this.debugBoxes.push({ x: headBox.x, y: headBox.y, fillColor: 'red', speedX: headBox.speedX, speedY: headBox.speedY })
+            // console.log("log: ", { center: this.getBoxCenter({ x: 1, y: 1, fillColor: this.boxColor }) });
+            // console.log("", { headBox, speedX: this.speedX, speedY: this.speedY,  clickPoint, center, diffX, diffY });
+            this.executeCommand(cmd);
+            // console.log("", { headBox: this.getHeadBox(), speedX: this.speedX, speedY: this.speedY });
+            // console.log("");
+        }
+    };
     Game.prototype.onKeyDown = function (e) {
+        var cmd = null;
         switch (e.keyCode) {
-            // esc
             case 27:
                 if (this.state == 'running') {
-                    this.state = 'paused';
+                    cmd = CommandEnum.PAUSE;
                 }
                 else if (this.state == "paused") {
-                    this.state = 'running';
+                    cmd = CommandEnum.RUN;
                 }
                 break;
-            // left
             case 37:
+                cmd = CommandEnum.LEFT;
+                break;
+            case 39:
+                cmd = CommandEnum.RIGHT;
+                break;
+            case 38:
+                cmd = CommandEnum.UP;
+                break;
+            case 40:
+                cmd = CommandEnum.DOWN;
+                break;
+        }
+        if (cmd != null) {
+            this.executeCommand(cmd);
+        }
+    };
+    Game.prototype.executeCommand = function (cmd) {
+        switch (cmd) {
+            case CommandEnum.PAUSE:
+                this.state = 'paused';
+                break;
+            case CommandEnum.RUN:
+                this.state = 'running';
+                break;
+            // left
+            case CommandEnum.LEFT:
                 if (this.state == 'running' && this.speedX == 0) {
                     this.speedX = -1;
                     this.speedY = 0;
                 }
                 break;
             // right
-            case 39:
+            case CommandEnum.RIGHT:
                 if (this.state == 'running' && this.speedX == 0) {
                     this.speedX = 1;
                     this.speedY = 0;
                 }
                 break;
             // up
-            case 38:
+            case CommandEnum.UP:
                 if (this.state == 'running' && this.speedY == 0) {
                     this.speedX = 0;
                     this.speedY = -1;
                 }
                 break;
             // down
-            case 40:
+            case CommandEnum.DOWN:
                 if (this.state == 'running' && this.speedY == 0) {
                     this.speedX = 0;
                     this.speedY = 1;
@@ -146,10 +230,12 @@ var Game = /** @class */ (function () {
         }
     };
     Game.prototype.setNewTarget = function () {
+        var targetBox = null;
         do {
-            var targetBox = {
+            targetBox = {
                 x: Math.round(Math.random() * (this.maxX - 1)),
-                y: Math.round(Math.random() * (this.maxY - 1))
+                y: Math.round(Math.random() * (this.maxY - 1)),
+                fillColor: this.targetBoxColor
             };
         } while (this.isBoxInList(targetBox, this.boxes));
         this.targetBox = targetBox;
@@ -163,6 +249,10 @@ var Game = /** @class */ (function () {
         }
         return false;
     };
+    Game.prototype.getHeadBox = function () {
+        var result = this.boxes[this.boxes.length - 1];
+        return result;
+    };
     Game.prototype.loop = function () {
         this.update();
         this.draw();
@@ -171,26 +261,32 @@ var Game = /** @class */ (function () {
         // clear bg
         this.context.fillStyle = this.bgColor;
         this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        // fill background
         for (var x = 0; x < this.maxX; x++) {
             for (var y = 0; y < this.maxY; y++) {
-                var box = { x: x, y: y };
-                this.drawBox(box, '#242424', this.bgColor, false, false, null);
+                var box = { x: x, y: y, fillColor: this.bgColor };
+                this.drawBox(box, '#242424', false, false, null);
             }
+        }
+        // fill debug boxes
+        for (var _i = 0, _a = this.debugBoxes; _i < _a.length; _i++) {
+            var debugBox = _a[_i];
+            this.drawBox(debugBox, this.bgColor, false, false, null);
         }
         // target draw box
         if (this.targetBox != null) {
-            this.drawBox(this.targetBox, this.bgColor, this.targetBoxColor, false, false, null);
+            this.drawBox(this.targetBox, this.bgColor, false, false, null);
         }
         // draw boxes
         var isHead = false;
         var isTail = false;
         var nextBox = null;
         for (var i = 0; i < this.boxes.length; i++) {
-            var box_1 = this.boxes[i];
+            var box = this.boxes[i];
             isHead = (i == this.boxes.length - 1);
             isTail = (i == 0);
             nextBox = (!isHead ? this.boxes[i + 1] : null);
-            this.drawBox(box_1, this.bgColor, this.boxColor, isHead, isTail, nextBox);
+            this.drawBox(box, this.bgColor, isHead, isTail, nextBox);
         }
         // print game title
         this.context.fillStyle = 'white';
@@ -240,7 +336,7 @@ var Game = /** @class */ (function () {
             this.context.stroke();
         }
     };
-    Game.prototype.drawBox = function (box, strokeColor, fillColor, isHead, isTail, nextBox) {
+    Game.prototype.drawBox = function (box, strokeColor, isHead, isTail, nextBox) {
         var w = this.gridSize;
         var h = this.gridSize;
         var x1 = this.left + (box.x * this.gridSize);
@@ -248,7 +344,7 @@ var Game = /** @class */ (function () {
         var x2 = x1 + w;
         var y2 = y1 + h;
         if (!isTail || nextBox == null) {
-            this.fillRect(x1, y1, w, h, fillColor);
+            this.fillRect(x1, y1, w, h, box.fillColor);
             this.strokeRect(x1, y1, w, h, 1, strokeColor);
         }
         else {
@@ -277,7 +373,7 @@ var Game = /** @class */ (function () {
                 p2 = { x: x2, y: y2 };
                 p3 = { x: x1, y: y2 };
             }
-            this.drawTriangle(p1, p2, p3, fillColor, true);
+            this.drawTriangle(p1, p2, p3, box.fillColor, true);
             this.drawTriangle(p1, p2, p3, strokeColor, false);
         }
         if (isHead) {
@@ -321,3 +417,4 @@ document.addEventListener("DOMContentLoaded", function (event) {
     var game = new Game();
     game.init();
 });
+//# sourceMappingURL=game.js.map
