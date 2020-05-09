@@ -30,13 +30,16 @@ class Game {
 
     lives = 3;
     score = 0;
+
+    state = "paused"; // running, paused, gameover
+    width = 0;
+    height = 0;
+
     top = 90;
     left = 20;
     right = 20;
     bottom = 40;
-    state = "paused"; // running, paused, gameover
-    width = 0;
-    height = 0;
+    autorSectionHeight = 80;
 
     gameSpeed = 4;        
     gridSize = 20;
@@ -50,34 +53,57 @@ class Game {
     maxX = 10;
     maxY = 10;
     boxes: Box[] = [];
-    targetBox: Box = {x: 0, y: 0, fillColor: 'green' }; 
+    targetBox: Box = { x: 0, y: 0, fillColor: 'green' }; 
 
     timer: number = 0;
     debugBoxes: Box[] = [];
+    canvasSize = { width: 0, height: 0};
 
-    constructor() {
+    constructor() {        
         this.canvas = <HTMLCanvasElement>document.getElementById("game");
         this.context = <CanvasRenderingContext2D>this.canvas.getContext('2d');
-        document.onkeydown = this.onKeyDown.bind(this);
         this.canvas.onclick = this.onCanvasClick.bind(this);
+
+        // this.canvas = <HTMLCanvasElement>document.getElementById("game");
+        // this.context = <CanvasRenderingContext2D>this.canvas.getContext('2d');
+        window.onresize= this.onResize.bind(this);
+        document.onkeydown = this.onKeyDown.bind(this);
         this.lives = 3;
         this.score = 0;
+
+        this.onResize(); 
+        // game.init();
+    }
+
+    onResize() {        
+        this.canvas.width = document.body.clientWidth; //document.width is obsolete
+        this.canvas.height = document.body.clientHeight - this.autorSectionHeight; //document.height is obsolete
+        this.context = <CanvasRenderingContext2D>this.canvas.getContext('2d');
+        
+
+        if (this.canvasSize.width != this.canvas.width ||
+            this.canvasSize.height != this.canvas.height
+            ) {
+            this.canvasSize.width = this.canvas.width;
+            this.canvasSize.height = this.canvas.height;
+            this.width = this.canvasSize.width - (this.left + this.right);
+            this.height = this.canvasSize.height - (this.top + this.bottom);
+
+            this.maxX = Math.ceil(this.width / this.gridSize);
+            this.maxY = Math.ceil(this.height / this.gridSize);    
+
+            this.init();
+        }
     }
 
     init() {
         this.state = 'running';
-        
-        this.width = this.canvas.width - (this.left + this.right);
-        this.height = this.canvas.height - (this.top + this.bottom);
 
         this.head = { x: 10, y: 10 };
         this.size = 5;
         
         this.speedX = 1;
         this.speedY = 0;
-
-        this.maxX = Math.ceil(this.width / this.gridSize);
-        this.maxY = Math.ceil(this.height / this.gridSize);
         
         this.boxes = [];
         this.targetBox = { x: 5, y: 5, fillColor: this.targetBoxColor };
@@ -477,5 +503,4 @@ class Game {
 
 document.addEventListener("DOMContentLoaded", function(event) { 
     let game = new Game();
-    game.init();
 });
