@@ -26,9 +26,9 @@ Simple version of classical snake game that was popular in nokia phones in 2000s
 * Dockerhub - Github Integration
 
 # Development Tools
-* node.js  (10+)
-* npm  (6+)
-* Typescript Compiler  (3.4.5+)
+* node.js (10+)
+* npm (6+)
+* Typescript Compiler (3.4.5+)
 * VSCode Extension: Debugger for Chrome
 * Modern Browser such as Chrome
 
