@@ -22,7 +22,7 @@ jobs:
           
       - name: Install and Build
         run: |
-          npm install && ls -la ./src
+          npm install
           
       - name: tsc compile
         run: node_modules/typescript/bin/tsc
@@ -31,5 +31,5 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@releases/v3
         with:          
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH: gh-pages # The branch the action should deploy to.
-          FOLDER: src # The folder the action should deploy.
+          BRANCH: gh-pages
+          FOLDER: src
