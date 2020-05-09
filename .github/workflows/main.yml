@@ -28,8 +28,8 @@ jobs:
         run: node_modules/typescript/bin/tsc
 
       - name: Package Helm Charts
-        users: flydiverny/helm-package-action@master
-        args: ./charts
+        uses: flydiverny/helm-package-action@master
+          args: ./charts
 
       - name: List folder content
         run: ls -la
