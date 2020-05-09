@@ -41,7 +41,7 @@ jobs:
       #   args: ./charts
 
       - name: Debug - List folder content
-        run: ls -la ./src && ls -la ./src/charts
+        run: ls -la ./src && ls -la ./src/charts && ls -la ./src/charts/index.yaml
 
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@releases/v3
