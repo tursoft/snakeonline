@@ -30,7 +30,7 @@ jobs:
       - name: Package Helm Charts
         uses: dave-mcconnell/helm-gh-pages-microservices@master
         with:
-          access-token: ${{ secrets.CR_TOKEN }}
+          access-token: ${{ secrets.GITHUB_TOKEN }}
           source-charts-folder: 'charts'
           destination-repo: tursoft/snake-online
 
