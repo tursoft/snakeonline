@@ -29,7 +29,7 @@ jobs:
 
       - name: Package Helm Charts
         uses: flydiverny/helm-package-action@master
-          args: ./charts
+        args: ./charts
 
       - name: List folder content
         run: ls -la
