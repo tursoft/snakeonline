@@ -1,10 +1,10 @@
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  name: {{ template "snake-online.fullname" . }}
+  name: {{ template "snakeonline.fullname" . }}
   labels:
-    app: {{ template "snake-online.name" . }}
-    chart: {{ template "snake-online.chart" . }}
+    app: {{ template "snakeonline.name" . }}
+    chart: {{ template "snakeonline.chart" . }}
     draft: {{ .Values.draft | default "draft-app" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
@@ -12,12 +12,12 @@ spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ template "snake-online.name" . }}
+      app: {{ template "snakeonline.name" . }}
       release: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ template "snake-online.name" . }}
+        app: {{ template "snakeonline.name" . }}
         draft: {{ .Values.draft | default "draft-app" }}
         release: {{ .Release.Name }}
       annotations:
@@ -48,7 +48,7 @@ spec:
             - name: {{ $ref }}_{{ $key }}
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "snake-online.fullname" $root }}-{{ $ref | lower }}
+                  name: {{ template "snakeonline.fullname" $root }}-{{ $ref | lower }}
                   key: {{ $key }}
             {{- end }}
             {{- end }}

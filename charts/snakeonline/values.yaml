@@ -1,11 +1,11 @@
-# Default values for snake-online.
+# Default values for snakeonline.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-fullnameOverride: snake-online
+fullnameOverride: snakeonline
 replicaCount: 1
 image:
-  repository: snake-online
-  tag: stable
+  repository: tursoft/snakeonline
+  tag: latest
   pullPolicy: IfNotPresent
 imagePullSecrets: []
   # Optionally specify an array of imagePullSecrets.

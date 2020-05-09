@@ -6,7 +6,9 @@
   "main": "game.js",
   "scripts": {
     "build": "tsc --build tsconfig.json",
-    "watch": "tsc --watch"
+    "watch": "tsc --watch",
+    "helm": "helm package ./charts/snakeonline -d ./charts",
+    "heml-install": "helm install snakeonline ./charts/snake-online-1.0.0.tgz"
   },
   "author": "Muhammet TURŞAK <tursoft@gmail.com>",
   "license": "Apache-2.0",

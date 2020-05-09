@@ -1,12 +1,12 @@
 apiVersion: v1
 entries:
-  snake-online:
+  snakeonline:
   - apiVersion: v1
     appVersion: "1.0"
     created: 2020-05-09T04:40:08.729368+02:00
     description: Snake Online Game Helm charts for Kubernetes
-    name: snake-online
+    name: snakeonline
     urls:
-    - https://tursoft.github.io/snakeonline/charts/snake-online-1.0.0.tgz
+    - https://tursoft.github.io/snakeonline/charts/snakeonline-1.0.0.tgz
     version: 0.1.0
 generated: 2020-05-09T04:40:08.729368+02:00

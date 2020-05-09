@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "snake-online.fullname" . }}
+  name: {{ template "snakeonline.fullname" . }}
   labels:
-    app: {{ template "snake-online.name" . }}
-    chart: {{ template "snake-online.chart" . }}
+    app: {{ template "snakeonline.name" . }}
+    chart: {{ template "snakeonline.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
@@ -15,5 +15,5 @@ spec:
       protocol: TCP
       name: http
   selector:
-    app: {{ template "snake-online.name" . }}
+    app: {{ template "snakeonline.name" . }}
     release: {{ .Release.Name }}
