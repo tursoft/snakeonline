@@ -21,11 +21,13 @@ jobs:
           node-version: 12
           
       - name: Install and Build
-        run: |
-          npm install
+        run: npm install
           
       - name: Typescript Compile
         run: node_modules/typescript/bin/tsc
+
+      - name: Copy Helm Charts
+        run: mkdir ./src/charts && cp -R ./charts/*.* ./src/charts
 
       # - name: Package Helm Charts
       #   uses: dave-mcconnell/helm-gh-pages-microservices@master
