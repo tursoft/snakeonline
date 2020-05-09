@@ -17,10 +17,17 @@ Simple version of classical snake game that was popular in nokia phones in 2000s
 * [hastatic](https://github.com/abhin4v/hastatic)
 * docker
 
+# Platforms & Features
+* Github
+* Github Actions
+* Github Pages
+* Dockerhub
+* Dockerhub - Github Integration
+
 # Development Tools
 * node.js  (10+)
 * npm  (6+)
-* Typescript Compiler  (3.4.5 or latest)
+* Typescript Compiler  (3.4.5+)
 * VSCode Extension: Debugger for Chrome
 * Modern Browser such as Chrome
 
