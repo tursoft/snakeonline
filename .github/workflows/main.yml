@@ -28,8 +28,15 @@ jobs:
         run: node_modules/typescript/bin/tsc
 
       - name: Package Helm Charts
-        uses: flydiverny/helm-package-action@master
-        args: ./charts
+        - uses: dave-mcconnell/helm-gh-pages-microservices@master
+        with:
+          access-token: ${{ secrets.CR_TOKEN }}
+          source-charts-folder: 'charts'
+          destination-repo: tursoft/snake-online
+
+      # - name: Package Helm Charts
+      #   uses: flydiverny/helm-package-action@master
+      #   args: ./charts
 
       - name: List folder content
         run: ls -la
