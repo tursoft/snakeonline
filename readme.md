@@ -12,18 +12,19 @@ Simple version of classical snake game that was popular in nokia phones in 2000s
 # Demo Deployment
 * https://tursoft.github.io/snakeonline/
 
-# Technologies
+# Technologies (app)
 * Typescript, Javascript
 * html, css
+
+# Technologies (deployment)
 * [hastatic](https://github.com/abhin4v/hastatic)
 * docker
-
-# Platforms & Features
-* Github
-* Github Actions
-* Github Pages
-* Dockerhub
-* Dockerhub - Github Integration
+* kubernetes
+* helm
+* github
+* github actions
+* github pages
+* dockerhub + github integration
 
 # Development Tools
 * node.js (10+)
