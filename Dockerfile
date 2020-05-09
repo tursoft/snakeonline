@@ -1,6 +1,6 @@
 FROM node:10.15.2-alpine AS build
 WORKDIR /usr/app
-COPY package.json ./
+COPY *.* ./
 RUN npm install
 COPY ./src ./src
 RUN npm run build
