@@ -6,8 +6,18 @@ interface Point {
 interface Box {
     x: number;
     y: number;
+    fillColor: string;
     speedX?: number;
-    speedY?: number;
+    speedY?: number;    
+}
+
+enum CommandEnum {
+    UP,
+    DOWN,
+    LEFT,
+    RIGHT,
+    PAUSE,
+    RUN    
 }
 
 class Game {
@@ -40,14 +50,16 @@ class Game {
     maxX = 10;
     maxY = 10;
     boxes: Box[] = [];
-    targetBox: Box = {x: 0, y: 0}; 
+    targetBox: Box = {x: 0, y: 0, fillColor: 'green' }; 
 
     timer: number = 0;
+    debugBoxes: Box[] = [];
 
     constructor() {
         this.canvas = <HTMLCanvasElement>document.getElementById("game");
         this.context = <CanvasRenderingContext2D>this.canvas.getContext('2d');
         document.onkeydown = this.onKeyDown.bind(this);
+        this.canvas.onclick = this.onCanvasClick.bind(this);
         this.lives = 3;
         this.score = 0;
     }
@@ -68,7 +80,7 @@ class Game {
         this.maxY = Math.ceil(this.height / this.gridSize);
         
         this.boxes = [];
-        this.targetBox = { x: 5, y: 5 };
+        this.targetBox = { x: 5, y: 5, fillColor: this.targetBoxColor };
         this.setNewTarget();
 
         this.setGameSpeed(this.gameSpeed)
@@ -86,8 +98,8 @@ class Game {
 
     update() {        
         if (this.state == 'running') {
-            var newX = (this.head.x + this.speedX);
-            var newY = (this.head.y + this.speedY);
+            let newX = (this.head.x + this.speedX);
+            let newY = (this.head.y + this.speedY);
             if (newX < 0) {
                 newX = this.maxX-1; 
             }
@@ -105,7 +117,7 @@ class Game {
             }
     
             this.head = { x: newX, y: newY };            
-            let nexBox = {x: this.head.x, y: this.head.y, speedX: this.speedX, speedY: this.speedY};
+            let nexBox: Box = {x: this.head.x, y: this.head.y, fillColor: this.boxColor, speedX: this.speedX, speedY: this.speedY};
             this.boxes.push(nexBox);
 
             if (this.boxes.length > this.size) {
@@ -121,8 +133,8 @@ class Game {
             }
 
             // has collapse? gameover
-            for(var i=0; i < this.boxes.length-1; i++) {
-                var box = this.boxes[i];
+            for(let i=0; i < this.boxes.length-1; i++) {
+                let box = this.boxes[i];
                 if (box.x == this.head.x && box.y == this.head.y) {
                     this.reset();
                 }
@@ -130,19 +142,92 @@ class Game {
         }        
     }    
 
+    getBoxCenter(box: Box): Point {
+        let centerX = ((box.x - 1) * this.gridSize) + (this.gridSize/2); // this.width / 2;
+        let centerY = ((box.y - 1) * this.gridSize) + (this.gridSize/2); // this.height / 2;
+        return { x: centerX, y: centerY };
+    }
+
+    getOffsetPosition(evt: any, parent: any): Point {
+        var position = {
+            x: (evt.targetTouches) ? evt.targetTouches[0].pageX : evt.clientX,
+            y: (evt.targetTouches) ? evt.targetTouches[0].pageY : evt.clientY
+        };
+    
+        while(parent.offsetParent){
+            position.x -= parent.offsetLeft - parent.scrollLeft;
+            position.y -= parent.offsetTop - parent.scrollTop;
+    
+            parent = parent.offsetParent;
+        }
+    
+        return position;
+    }
+
+    onCanvasTouched(e: TouchEvent) {
+        e.preventDefault();        
+        let clickPoint = this.getOffsetPosition(e, e.target);
+        this.handleClick(clickPoint);
+    }
+
+    onCanvasClick(e: MouseEvent) {
+        e.preventDefault();
+        let clickPoint: Point = { x: e.offsetX - this.left, y: e.offsetY - this.top };
+        this.handleClick(clickPoint);
+    }
+
+    handleClick(clickPoint: Point) {               
+        let headBox = this.getHeadBox();
+        let center = this.getBoxCenter(headBox);
+        let diffX = clickPoint.x - center.x;
+        let diffY = clickPoint.y - center.y;
+
+        let cmd: CommandEnum | null = null;
+        if (this.speedX == 0) {
+            cmd = (diffX > 0 ? CommandEnum.RIGHT : CommandEnum.LEFT);
+        } else if (this.speedY == 0) {
+            cmd = (diffY > 0 ? CommandEnum.DOWN : CommandEnum.UP);
+        }
+        
+        if (cmd != null) {
+            // this.debugBoxes.push({ x: headBox.x, y: headBox.y, fillColor: 'red', speedX: headBox.speedX, speedY: headBox.speedY })
+            // console.log("log: ", { center: this.getBoxCenter({ x: 1, y: 1, fillColor: this.boxColor }) });
+            // console.log("", { headBox, speedX: this.speedX, speedY: this.speedY,  clickPoint, center, diffX, diffY });
+            this.executeCommand(<CommandEnum>cmd);
+            // console.log("", { headBox: this.getHeadBox(), speedX: this.speedX, speedY: this.speedY });
+            // console.log("");
+        }
+    }
+
     onKeyDown(e: KeyboardEvent) {
+        let cmd: CommandEnum | null = null;
         switch(e.keyCode) {
-            // esc
             case 27:
                 if (this.state == 'running') {
-                    this.state = 'paused';
+                    cmd = CommandEnum.PAUSE;
                 } else if (this.state == "paused") {
-                    this.state = 'running';
+                    cmd = CommandEnum.RUN;
                 }
             break;
+            case 37: cmd = CommandEnum.LEFT; break;
+            case 39: cmd = CommandEnum.RIGHT; break;
+            case 38: cmd = CommandEnum.UP; break;
+            case 40: cmd = CommandEnum.DOWN; break;
+        }        
+
+        if (cmd != null) {
+            this.executeCommand(cmd);
+        }
+    }
+
+    executeCommand(cmd: CommandEnum) {
+        switch(cmd) {
+            case CommandEnum.PAUSE: this.state = 'paused'; break;
+
+            case CommandEnum.RUN: this.state = 'running'; break;
 
             // left
-            case 37:
+            case CommandEnum.LEFT:
                 if (this.state == 'running' && this.speedX == 0) {
                     this.speedX = -1;
                     this.speedY = 0;
@@ -150,7 +235,7 @@ class Game {
             break;
             
             // right
-            case 39: 
+            case CommandEnum.RIGHT:
                 if (this.state == 'running' && this.speedX == 0) {
                     this.speedX = 1;
                     this.speedY = 0;
@@ -158,7 +243,7 @@ class Game {
             break;
 
             // up
-            case 38: 
+            case CommandEnum.UP:
                 if (this.state == 'running' && this.speedY == 0) {
                     this.speedX = 0;
                     this.speedY = -1;
@@ -166,13 +251,13 @@ class Game {
             break;
 
             // down
-            case 40: 
+            case CommandEnum.DOWN:
                 if (this.state == 'running' && this.speedY == 0) {
                     this.speedX = 0;
                     this.speedY = 1;
                 }
             break;
-        }        
+        } 
     }
 
     reset() {
@@ -187,23 +272,30 @@ class Game {
     }
 
     setNewTarget() {                
+        let targetBox: Box | null = null;
         do {
-            var targetBox = { 
+            targetBox = {
                 x: Math.round(Math.random() * (this.maxX-1)),
-                y: Math.round(Math.random() * (this.maxY-1))
+                y: Math.round(Math.random() * (this.maxY-1)),
+                fillColor: this.targetBoxColor
             };        
         } while(this.isBoxInList(targetBox, this.boxes));
         this.targetBox=targetBox;        
     }
 
     isBoxInList(targetBox: Box, boxes: Box[]) {
-        for(var i=0; i < boxes.length; i++) {
-            var box = boxes[i];
+        for(let i=0; i < boxes.length; i++) {
+            let box = boxes[i];
             if (box.x == targetBox.x && box.y == targetBox.y) {
                 return true;
             }
         }
         return false;
+    }
+
+    getHeadBox(): Box {
+        let result = this.boxes[this.boxes.length - 1];
+        return result;
     }
 
     loop() {
@@ -216,28 +308,35 @@ class Game {
         this.context.fillStyle = this.bgColor;
         this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-        for(var x =0 ;x<this.maxX; x++) {
-            for(var y =0 ;y<this.maxY; y++) {
-                var box = {x: x, y: y};
-                this.drawBox(box, '#242424', this.bgColor, false, false, null);
+        // fill background
+        for(let x =0 ;x<this.maxX; x++) {
+            for(let y =0 ;y<this.maxY; y++) {
+                let box = {x: x, y: y, fillColor: this.bgColor};
+                this.drawBox(box, '#242424', false, false, null);
             }
         }
 
+        // fill debug boxes
+        for(let debugBox of this.debugBoxes) {
+            this.drawBox(debugBox, this.bgColor, false, false, null);
+        }
+        
+
         // target draw box
         if (this.targetBox != null) {
-            this.drawBox(this.targetBox, this.bgColor, this.targetBoxColor, false, false, null);            
+            this.drawBox(this.targetBox, this.bgColor, false, false, null);            
         }
 
         // draw boxes
-        var isHead = false;
-        var isTail = false;
-        var nextBox = null;
-        for(var i =0 ;i<this.boxes.length; i++) {            
+        let isHead = false;
+        let isTail = false;
+        let nextBox = null;
+        for(let i =0 ;i<this.boxes.length; i++) {            
             let box = this.boxes[i]; 
             isHead = (i == this.boxes.length-1);
             isTail = (i == 0);
             nextBox = (!isHead ? this.boxes[i+1] : null);
-            this.drawBox(box, this.bgColor, this.boxColor, isHead, isTail, nextBox);
+            this.drawBox(box, this.bgColor, isHead, isTail, nextBox);
         }
         
 
@@ -273,10 +372,10 @@ class Game {
             this.context.fillText(`PAUSED`, (this.width - 100)/2, this.top + 50);
         
         } else if (this.state == 'gameover') {
-            var boxHeight = 60;
-            var boxWidth = this.width;
-            var boxX = this.left;
-            var boxY = this.top+((this.height - boxHeight) / 2);            
+            let boxHeight = 60;
+            let boxWidth = this.width;
+            let boxX = this.left;
+            let boxY = this.top+((this.height - boxHeight) / 2);            
             this.fillRect(boxX, boxY, this.width, boxHeight, 'red');
 
             this.context.fillStyle = 'white';
@@ -298,24 +397,24 @@ class Game {
         }    
     }
 
-    drawBox(box: Box, strokeColor: string, fillColor: string, isHead: boolean, isTail: boolean, nextBox: Box | null) {
-        var w = this.gridSize;
-        var h = this.gridSize;
-        var x1 =  this.left + (box.x * this.gridSize);
-        var y1 =  this.top + (box.y * this.gridSize);                
-        var x2 = x1 + w;
-        var y2 = y1 + h;
+    drawBox(box: Box, strokeColor: string, isHead: boolean, isTail: boolean, nextBox: Box | null) {
+        let w = this.gridSize;
+        let h = this.gridSize;
+        let x1 =  this.left + (box.x * this.gridSize);
+        let y1 =  this.top + (box.y * this.gridSize);                
+        let x2 = x1 + w;
+        let y2 = y1 + h;
 
         if (!isTail || nextBox == null) {
-            this.fillRect(x1, y1, w, h, fillColor);
+            this.fillRect(x1, y1, w, h, box.fillColor);
             this.strokeRect(x1, y1, w, h, 1, strokeColor)    
         } else {
-            var p1 = { x: x1, y: y1 };
-            var p2 = { x: x1, y: y2 };
-            var p3 = { x: x2, y: y2 };
+            let p1 = { x: x1, y: y1 };
+            let p2 = { x: x1, y: y2 };
+            let p3 = { x: x2, y: y2 };
 
-            var speedX = nextBox.speedX;
-            var speedY = nextBox.speedY;
+            let speedX = nextBox.speedX;
+            let speedY = nextBox.speedY;
 
             if (speedX == -1) { // left
                 p1 = {x: x1, y: y1 };
@@ -335,15 +434,15 @@ class Game {
                 p3 = {x: x1, y: y2 };
             }
 
-            this.drawTriangle(p1, p2, p3, fillColor, true);
+            this.drawTriangle(p1, p2, p3, box.fillColor, true);
             this.drawTriangle(p1, p2, p3, strokeColor, false);  
         }
             
         if (isHead) {      
-            var p1 = {x: 0, y: 0 };
-            var p2 = {x: 0, y: 0 };
-            var pw = 2;
-            var ph = 2;
+            let p1 = {x: 0, y: 0 };
+            let p2 = {x: 0, y: 0 };
+            let pw = 2;
+            let ph = 2;
             if (this.speedX == -1) { // left
                 p1 = {x: (x1 + 2), y: (y1 + 2) };
                 p2 = {x: (x1 + 2), y: (y2 - ph - 4) };
@@ -377,6 +476,6 @@ class Game {
 }
 
 document.addEventListener("DOMContentLoaded", function(event) { 
-    var game = new Game();
+    let game = new Game();
     game.init();
 });

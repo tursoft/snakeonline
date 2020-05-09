@@ -5,7 +5,8 @@
   "repository": "github:tursoft/snakeonline",
   "main": "game.js",
   "scripts": {
-    "build": "tsc --build tsconfig.json"
+    "build": "tsc --build tsconfig.json",
+    "watch": "tsc --watch"
   },
   "author": "Muhammet TURŞAK <tursoft@gmail.com>",
   "license": "Apache-2.0",
