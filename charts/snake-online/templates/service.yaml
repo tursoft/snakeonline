@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "snake-online.fullname" . }}
+  labels:
+    app: {{ template "snake-online.name" . }}
+    chart: {{ template "snake-online.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app: {{ template "snake-online.name" . }}
+    release: {{ .Release.Name }}

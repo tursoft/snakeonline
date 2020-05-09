@@ -27,6 +27,13 @@ jobs:
       - name: Typescript Compile
         run: node_modules/typescript/bin/tsc
 
+      - name: Package Helm Charts
+        users: flydiverny/helm-package-action@master
+        args: ./charts
+
+      - name: List folder content
+        run: ls -la
+
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@releases/v3
         with:          

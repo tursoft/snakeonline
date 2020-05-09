@@ -66,6 +66,10 @@ push the image to registry
 pull image and run a container
 * `sudo docker run --name snakeonline -d -p 8080:3000 tursoft/snakeonline`
 
+# Helm Build & Deploy
+* `helm package ./charts/snake-online`
+* `helm install snake-online ./snake-online-1.0.0.tgz`
+
 # Screenshoot
 ![Screenshoot][screenshoot1]
 
