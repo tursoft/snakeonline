@@ -10,17 +10,17 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout Source
         uses: actions/checkout@v2
         with:
           persist-credentials: false
 
-      - name: install node v12
+      - name: install Node (v12)
         uses: actions/setup-node@v1
         with:
           node-version: 12
           
-      - name: Install and Build
+      - name: Install and Build Dependencies
         run: npm install
           
       - name: Typescript Compile
@@ -41,9 +41,9 @@ jobs:
       #   args: ./charts
 
       - name: Debug - List folder content
-        run: ls -la ./src && ls -la ./src/charts && ls -la ./src/charts/index.yaml
+        run: ls -la ./src && ls -la ./src/charts && cat ./src/charts/index.yaml
 
-      - name: Deploy 🚀
+      - name: Deploy to Git Pages 🚀
         uses: JamesIves/github-pages-deploy-action@releases/v3
         with:          
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
